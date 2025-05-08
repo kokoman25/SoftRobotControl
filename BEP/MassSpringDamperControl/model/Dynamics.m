@@ -4,7 +4,7 @@ function [pos, vel] = massSpringDamperDynamics(u)
 % pos: output position (m)
 % vel: output velocity (m/s)
 
-% System parameters
+% System parameterss
 m = 1.0;    % Mass (kg)
 c = 0.5;    % Damping coefficient (Ns/m)
 k = 2.0;    % Spring constant (N/m)
