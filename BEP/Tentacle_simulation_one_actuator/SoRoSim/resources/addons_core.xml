@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addonCore>
+  <label>SoRoSim</label>
+  <version>7.0</version>
+  <type>Toolbox</type>
+  <identifier>5b6a8031-ad6c-43de-a924-3a4a63d06319</identifier>
+  <summary>A unified simulation and analysis platform for soft, rigid and hybrid robotic systems.</summary>
+  <description>The SoRoSim Toolbox
+SoRoSim, or Soft Robot Simulator, is a MATLAB toolbox that uses the Geometric Variable Strain (GVS) approach to provide a unified framework for the modeling, analysis, and control of soft, rigid, and hybrid robots. The toolbox can be used to analyze open-, closed- and branched structures and allows the user to model many different external loading and actuation scenarios. The soft links are modeled as a Cosserat rod, a 1D, slender rod accounting for bend, twist, stretch, and shear. MATLAB GUI assists in creating links, their assembly, the assignment of DoFs, and the definition of external and actuation forces. The new version of the toolbox, Differential_SoRoSim, uses analytical derivatives of the governing equations of GVS for efficient mechanical analysis. We encourage users to make use of this powerful tool.
+The examples folder of the toolbox contains some saved linkages and links for which you can run simulations.
+Paper and How to cite
+Find the overview of the toolbox, validation, and examples of problems that can be analyzed using SoRoSim in our IEEE Robotics and Automation Magazine paper, "SoRoSim: A MATLAB Toolbox for Hybrid Rigid-Soft Robots Based on the Geometric Variable-Strain Approach". The Theory behind the toolbox can be found in our IJRR paper "Reduced order modeling of hybrid soft-rigid robots using global, local, and state-dependent strain parameterization"
+
+This work was supported in part by US Office of Naval Research Global under Grant N62909-21-1-2033, and in part by the the Khalifa University of Science and Technology under Grants CIRA-2020-074, RC1-2018-KUCARS.
+</description>
+  <createdBy name="Ikhlas Ben Hmida"/>
+  <image>resources/screenshot.png</image>
+</addonCore>
