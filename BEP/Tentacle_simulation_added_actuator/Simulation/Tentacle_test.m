@@ -38,7 +38,7 @@ for i = 1:(length(Ts)-2)
     % Get coordinates of significant points along soft body
     point_co = Tentacle1.FwdKinematics(q(i,:));
     for j = 1:(length(point_co)/4)
-        point_co(4*j-3:4*j-1,4)
+        point_co(4*j-3:4*j-1,4);
         Bco(3*j-2:3*j,i) = point_co(4*j-3:4*j-1,4);
     end
 
