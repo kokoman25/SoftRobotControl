@@ -175,12 +175,12 @@ switch dynamicsOptions.Integrator
         t=0:dt:tmax;
 end
 
-save('DynamicsSolution.mat','t','qqd');
-
-answer = questdlg('Generate output video of the simulation?','Grapical Output','Yes','No','Yes');
-if strcmp('Yes',answer)
-    plotqt(Linkage,t,qqd);
-end
+% save('DynamicsSolution.mat','t','qqd');
+% 
+% answer = questdlg('Generate output video of the simulation?','Grapical Output','Yes','No','Yes');
+% if strcmp('Yes',answer)
+%     plotqt(Linkage,t,qqd);
+% end
 
 
 end
