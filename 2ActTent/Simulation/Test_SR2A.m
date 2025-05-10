@@ -1,10 +1,10 @@
 clear;                              % Clear Workspace to make sure that only data from this script is used 
 %startup;                           % Initialize SoRoSim Toolbox
-load('model\TentacleFiles.mat');  % Load model paramters into the workspace
+load('model\TentacleFiles.mat');    % Load model paramters into the workspace
 %open('DynamcicsSolution.mat')
 
 % Definition of Time simulation
-T = 1;            % Total duration of simulation (s)
+T = 10;              % Total duration of simulation (s)
 dt = 0.01;          % Time step (s)
 Ts = 0:dt:T;        % List of time steps until end of simulation
 
@@ -14,22 +14,21 @@ qd0 = [0, 0, 0, 0];     % initial condition velocity
 qqd = [q0, qd0];        % Initial condition
 
 % Initialization of actuation function
-actuation = @(t) deal([50 * sin(2*pi*t); 50*cos(4*pi*t)], zeros(0,1), zeros(0,1)); 
-
+actuation = @(t) deal([5 * sin(2*pi*t); 5*cos(4*pi*t)], zeros(0,1), zeros(0,1)); 
 
 % Simulation data storage
-t_list = zeros(1,length(Ts));                          % Time list for simulation output 
-q = zeros(length(Ts),length(q0));      q(1,:) = q0;    % Angle list for simulation output
-qd = zeros(length(Ts), length(qd0));   qd(1,:) = qd0;  % Angluar velocity list for simulation output
-Bco = zeros(3*Tentacle.nsig, length(Ts));             % Body coordinate list
+t_list = zeros(1,length(Ts));                           % Time list for simulation output 
+q = zeros(length(Ts),length(q0));      q(1,:) = q0;     % Angle list for simulation output
+qd = zeros(length(Ts), length(qd0));   qd(1,:) = qd0;   % Angluar velocity list for simulation output
+Bco = zeros(3*Tentacle.nsig, length(Ts));               % Body coordinate list
 
 % Simulate Dynamics of Soft Body
 for i = 1:(length(Ts)-2)
 
     % Calculate Dynamic state vector
     [t, qqd] = Tentacle.dynamics(qqd(end, :), actuation, dt = dt, ...
-        t_start=Ts(i), t_end=Ts(i+2), Integrator='ode45');    % Dynamic simulation of 1 timestep, output is 3 dynamic solutions for 3 timesteps
-    t_list(i) = t(2);  % add current time to time list
+        t_start=Ts(i), t_end=Ts(i+2), Integrator='ode45');      % Dynamic simulation of 1 timestep, output is 3 dynamic solutions for 3 timesteps
+    t_list(i) = t(2);                                           % add current time to time list
 
     % Get angle and angluar velocity and add to state space vector
     q(i,:) = (qqd(1,1:4)+qqd(2,1:4)+qqd(3,1:4))/3;  % Take average of angle simulation output and add to list
@@ -67,7 +66,7 @@ end
 % size(Ts(1:end))
 % size([q, qd])
 
-%Tentacle1.plotqt(Ts(1:end), [q, qd])
+Tentacle.plotqt(Ts(1:end), [q, qd])
  
 % % figure;
 % % subplot(2,2,1);
