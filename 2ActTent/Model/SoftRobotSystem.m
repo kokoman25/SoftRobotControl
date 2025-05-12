@@ -1,12 +1,12 @@
 classdef SoftRobotSystem < matlab.System
     % SoftRobotSystem: System block to simulate one time step of a soft robot model
-    % using an object loaded from matlab.mat (must contain 'T1')
+    % using an object loaded from matlab.mat (must contain 'Tentacle')
     % Manually change nr of Dof of model (determine ndof by typing in command window (Linkagename).ndof)
     % Manually change nr of nsig of model (determine nsig by typing in
     %   command window (linkagename).nsig)
 
     properties (Access = private)
-        Robot               % SoRoSim model object (T1)
+        Robot               % SoRoSim model object (Tentacle)
         ModelLoaded = false % Makes sure the model is initialized for the simulation
         dt = 0.01           % Fixed timestep
     end
@@ -21,7 +21,7 @@ classdef SoftRobotSystem < matlab.System
             end
         end
 
-        function [Angle, AngularVelocity, sigcoordinates] = stepImpl(obj, u, ang, avel)
+        function [Angle, AngularVelocity, sigcoordinates] = stepImpl(obj, u1, u2, ang, avel)
             % u: control input (column vector)
             % ang: current angles
             % avel: current angluar velocity
@@ -31,8 +31,9 @@ classdef SoftRobotSystem < matlab.System
 
             % Simulate from current state using one timestep
             [~, qqd] = obj.Robot.dynamics(state, ...
-                @(t) deal([u; -u], [], []), ...
-                dt = obj.dt, t_start = 0, t_end = 2 * obj.dt);  % Integrator = 'ode45'
+                @(t) deal([u1; u2], [], []), ...
+                dt = obj.dt, t_start = 0, t_end = 2 * obj.dt, ...
+                Integrator= 'ode45'); 
 
             % Return middle step result 
             state_out = (qqd(1, :) + qqd(2,:) + qqd(3,:))/3;    % Average of 3 output values
