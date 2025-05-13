@@ -22,20 +22,18 @@ classdef SoftRobotSystemRL < matlab.System
                 dt = obj.dt, t_start = 0, t_end = 2 * obj.dt, ...
                 Integrator = 'ode45');
 
-            % Average of 3 steps
-            state_out = mean(qqd(1:3,:), 1);
-            Angle = state_out(1:length(ang))';
-            AngularVelocity = state_out(length(ang)+1:end)';
+            % Return middle step result 
+            state_out = (qqd(1, :) + qqd(2,:) + qqd(3,:))/3;    % Average of 3 output values
+            Angle = state_out(1:length(ang))';                  % Angles of current state
+            AngularVelocity = state_out(length(ang)+1:end)';    % Angular Velocities of current state
 
-            % Forward kinematics
-            point_co = obj.Robot.FwdKinematics(Angle);
-            nsig = 8;  % Hardcoded; match your robot
-            Trajec = zeros(3 * nsig, 1);
-
-            for j = 1:nsig
-                Trajec(3*j-2:3*j) = point_co(4*j-3:4*j-1, 4);
+            % Return x, y, z coordinates of Tentacle
+            point_co = obj.Robot.FwdKinematics(Angle);          % Optain Forward kinematics for angle (4 * 4) * nsig
+            Trajec = zeros(3*8,1);                              % 3 coordinates, 8 significant points
+            for j = 1:(length(point_co)/4)
+                point_co(4*j-3:4*j-1,4);                        % Tranformation matrix [[R p]; [0, 1]] -> R = Rotation matrix, p = position vector
+                Trajec(3*j-2:3*j,1) = point_co(4*j-3:4*j-1,4);  % Take position vector and store in column [x1;y1;z1;x2;y2;z2;enz] -> 3*8x1 vector
             end
-
             sigcoordinates = Trajec;
         end
 
@@ -44,13 +42,12 @@ classdef SoftRobotSystemRL < matlab.System
         end
 
         function s = saveObjectImpl(obj)
-            s = saveObjectImpl@matlab.System(obj);
-            s.Robot = obj.Robot;
+            s = saveObjectImpl@SoftRobotSystemRL(obj);
         end
 
         function obj = loadObjectImpl(obj, s, wasLocked)
-            obj = loadObjectImpl@matlab.System(obj, s, wasLocked);
-            obj.Robot = s.Robot;
+            obj = loadObjectImpl@SoftRobotSystemRL(obj, s, wasLocked);
+            obj.Robot = getTentacleModel();
         end
 
         function flag = isInputSizeMutableImpl(~,~)
