@@ -16,8 +16,8 @@ classdef SoftRobotSystem < matlab.System
             % Only load the model once
             if ~obj.ModelLoaded
                 s = load('TentacleFiles.mat');  % must contain object T1
-                obj.Robot = s.Tentacle;              % Store Soft body under obj.Robot
-                obj.ModelLoaded = true;        % Model is initialized and this piece of code will be skipped further on in the simulation
+                obj.Robot = s.Tentacle;         % Store Soft body under obj.Robot
+                obj.ModelLoaded = true;         % Model is initialized and this piece of code will be skipped further on in the simulation
             end
         end
 
