@@ -2,7 +2,7 @@ mdl = 'SRT2ARL';
 agentBlk = [mdl, '/RL Agent'];
 
 % Define observation and action specifications
-obsInfo = rlNumericSpec([12 1], 'LowerLimit', [-inf; -inf; -inf; -inf; -inf; -inf; -inf; -inf; -inf; -inf; -inf; -inf], 'UpperLimit', [inf; inf; inf; inf; inf; inf; inf; inf; inf; inf; inf; inf]);
+obsInfo = rlNumericSpec([10 1]);
 obsInfo.Name = 'error_ref_ypos_xpos_avel_ang';
 
 actInfo = rlNumericSpec([2 1], 'LowerLimit', [-10; -10], 'UpperLimit', [0; 0]);
@@ -10,7 +10,7 @@ actInfo.Name = 'ac1_ac2';
 
 % Create the environment
 env = rlSimulinkEnv(mdl, agentBlk, obsInfo, actInfo);
-%env.ResetFcn = @msdResetFcn;
+env.ResetFcn = @msdResetFcn;
 
 %% RL Agent Design
 % Define the observation and action dimensions
@@ -18,7 +18,7 @@ numObs = obsInfo.Dimension(1);
 numAct = actInfo.Dimension(1);
 
 % Create the actor network
-actorLayerSizes = [24, 24];
+actorLayerSizes = [10, 10];
 actorNetwork = [
     featureInputLayer(numObs, 'Normalization', 'none', 'Name', 'state')
     fullyConnectedLayer(actorLayerSizes(1), 'Name', 'fc1')
@@ -85,4 +85,4 @@ trainingStats = train(agent, env, trainOpts);
 % in = Simulink.SimulationInput(mdl)';
 % in = msdResetFcn(in);
 % sim(in);
-% sim('MSDRL')
+% sim('SRT2ARL')
