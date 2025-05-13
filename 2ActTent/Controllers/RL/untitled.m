@@ -2,7 +2,7 @@ mdl = 'SRT2ARL';
 agentBlk = [mdl, '/RL Agent'];
 
 % Define observation and action specifications
-obsInfo = rlNumericSpec([10 1]);
+obsInfo = rlNumericSpec([12 1]);
 obsInfo.Name = 'error_ref_ypos_xpos_avel_ang';
 
 actInfo = rlNumericSpec([2 1], 'LowerLimit', [-10; -10], 'UpperLimit', [0; 0]);
@@ -10,7 +10,7 @@ actInfo.Name = 'ac1_ac2';
 
 % Create the environment
 env = rlSimulinkEnv(mdl, agentBlk, obsInfo, actInfo);
-env.ResetFcn = @msdResetFcn;
+env.ResetFcn = @(in) msdResetFcn(in);
 
 %% RL Agent Design
 % Define the observation and action dimensions
