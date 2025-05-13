@@ -11,7 +11,7 @@ actInfo.Name = 'ac1_ac2';
 % Create the environment
 env = rlSimulinkEnv(mdl, agentBlk, obsInfo, actInfo);
 env.ResetFcn = @(in) msdResetFcn(in);
-env.UseFastRestart = false;
+env.UseFastRestart = 'off';
 
 %% RL Agent Design
 % Define the observation and action dimensions
@@ -31,7 +31,7 @@ actorNetwork = [
     scalingLayer('Name', 'ActorScaling', 'Scale', max(abs(actInfo.UpperLimit)))
     ];
 
-actorOptions = rlRepresentationOptions('LearnRate',1e-4,'GradientThreshold',1);
+actorOptions = rlRepresentationOptions('LearnRate',1e-4,'GradientThreshold',1, 'UseDevice', 'gpu');
 actor = rlDeterministicActorRepresentation(actorNetwork, obsInfo, actInfo, ...
     'Observation', {'state'}, 'Action', {'ActorScaling'}, actorOptions);
 
@@ -57,7 +57,7 @@ criticNetwork = addLayers(criticNetwork, commonPath);
 criticNetwork = connectLayers(criticNetwork, 'relu1', 'add/in1');
 criticNetwork = connectLayers(criticNetwork, 'fc2', 'add/in2');
 
-criticOptions = rlRepresentationOptions('LearnRate',1e-3,'GradientThreshold',1);
+criticOptions = rlRepresentationOptions('LearnRate',1e-3,'GradientThreshold',1, 'UseDevice', 'gpu');
 critic = rlQValueRepresentation(criticNetwork, obsInfo, actInfo, ...
     'Observation', {'state'}, 'Action', {'action'}, criticOptions);
 
@@ -73,7 +73,7 @@ agent = rlDDPGAgent(actor, critic, agentOptions);
 
 %% Training
 trainOpts = rlTrainingOptions(...
-    'MaxEpisodes', 5, ...
+    'MaxEpisodes', 30, ...
     'MaxStepsPerEpisode', 200, ...
     'ScoreAveragingWindowLength', 5, ...
     'Verbose', false, ...
