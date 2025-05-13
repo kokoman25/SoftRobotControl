@@ -11,6 +11,7 @@ actInfo.Name = 'ac1_ac2';
 % Create the environment
 env = rlSimulinkEnv(mdl, agentBlk, obsInfo, actInfo);
 env.ResetFcn = @(in) msdResetFcn(in);
+env.UseFastRestart = false;
 
 %% RL Agent Design
 % Define the observation and action dimensions

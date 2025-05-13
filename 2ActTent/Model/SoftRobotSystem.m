@@ -52,8 +52,6 @@ classdef SoftRobotSystem < matlab.System
 
         function resetImpl(obj)
             % No reset needed
-            s = load('TentacleFiles.mat');
-            obj.Robot = s.Tentacle;
         end
 
         function s = saveObjectImpl(obj)
