@@ -11,7 +11,7 @@ actInfo.Name = 'ac1_ac2';
 % Create the environment
 env = rlSimulinkEnv(mdl, agentBlk, obsInfo, actInfo);
 env.ResetFcn = @(in) msdResetFcn(in);
-env.UseFastRestart = 'off';
+%env.UseFastRestart = 'off';
 
 %% RL Agent Design
 % Define the observation and action dimensions
@@ -73,7 +73,7 @@ agent = rlDDPGAgent(actor, critic, agentOptions);
 
 %% Training
 trainOpts = rlTrainingOptions(...
-    'MaxEpisodes', 10, ...
+    'MaxEpisodes', 5, ...
     'MaxStepsPerEpisode', 200, ...
     'ScoreAveragingWindowLength', 5, ...
     'Verbose', false, ...
@@ -81,9 +81,14 @@ trainOpts = rlTrainingOptions(...
     'StopTrainingCriteria', 'AverageReward', ...
     'StopTrainingValue', 500);
 
-% trainingStats = train(agent, env, trainOpts);
+trainingStats = train(agent, env, trainOpts);
 
 % in = Simulink.SimulationInput(mdl)';
 % in = msdResetFcn(in);
 % sim(in);
-sim('SRT2ARL')
+% x0 = 0.5;
+% y0 = 0;
+% theta0 = 0;
+% thetad0 = 0;
+% 
+% sim('SRT2ARL')
