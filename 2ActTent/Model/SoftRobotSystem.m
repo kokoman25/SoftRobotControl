@@ -54,15 +54,6 @@ classdef SoftRobotSystem < matlab.System
             % No reset needed
         end
 
-        function s = saveObjectImpl(obj)
-            s = saveObjectImpl@SoftRobotSystem(obj);
-            % Add: s.YourProperty = obj.YourProperty;  if needed
-        end
-    
-        function obj = loadObjectImpl(obj, s, wasLocked)
-            obj = loadObjectImpl@SoftRobotSystem(obj, s, wasLocked);
-            % Add: obj.YourProperty = s.YourProperty;  if needed
-        end
         % Function below are referenced during initialization to let
         % simulink know what Simulink can expect in terms of data
         % structures and they thus do not know any of the model parameters

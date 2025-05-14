@@ -41,15 +41,6 @@ classdef SoftRobotSystemRL < matlab.System
             % Fast Restart–safe: no reinitialization
         end
 
-        function s = saveObjectImpl(obj)
-            s = saveObjectImpl@SoftRobotSystemRL(obj);
-        end
-
-        function obj = loadObjectImpl(obj, s, wasLocked)
-            obj = loadObjectImpl@SoftRobotSystemRL(obj, s, wasLocked);
-            obj.Robot = getTentacleModel();
-        end
-
         function flag = isInputSizeMutableImpl(~,~)
             flag = false;
         end
