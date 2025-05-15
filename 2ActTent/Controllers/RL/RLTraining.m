@@ -1,3 +1,4 @@
+clear
 mdl = 'SRT2ARL';
 agentBlk = [mdl, '/RL Agent'];
 
@@ -9,9 +10,7 @@ actInfo = rlNumericSpec([2 1], 'LowerLimit', [-10; -10], 'UpperLimit', [0; 0]);
 actInfo.Name = 'ac1_ac2';
 
 % Create the environment
-env = rlSimulinkEnv(mdl, agentBlk, obsInfo, actInfo);
-%env.ResetFcn = @(in) msdResetFcn(in);
-env.UseFastRestart = 'off';
+env = rlSimulinkEnv(mdl, agentBlk, obsInfo, actInfo, "UseFastRestart", 'off');
 
 %% RL Agent Design
 % Define the observation and action dimensions
