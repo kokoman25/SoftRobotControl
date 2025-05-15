@@ -62,6 +62,26 @@ classdef SoftRobotSystem < matlab.System
             flag = false;
         end
 
+        function loadObjectImpl(obj,s,wasLocked)
+            % Set properties in object obj to values in structure s
+
+            % Set private and protected properties
+            % obj.myproperty = s.myproperty; 
+
+            % Set public properties and states
+            loadObjectImpl@matlab.System(obj,s,wasLocked);
+        end
+
+        function s = saveObjectImpl(obj)
+            % Set properties in structure s to values in object obj
+
+            % Set public properties and states
+            s = saveObjectImpl@matlab.System(obj);
+
+            % Set private and protected properties
+            %s.myproperty = obj.myproperty;
+        end
+
         function [posOut, velOut, cooOut] = getOutputSizeImpl(obj)
             % You must match these to your model's DoFs
             N = 4;%obj.ndof;%<- change this to your number of position variables

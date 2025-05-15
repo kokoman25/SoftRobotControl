@@ -1,26 +1,39 @@
 classdef SoftRobotSystemRL < matlab.System
-    % Fast Restart–compliant soft robot simulation block
+    % SoftRobotSystem: System block to simulate one time step of a soft robot model
+    % using an object loaded from matlab.mat (must contain 'Tentacle')
+    % Manually change nr of Dof of model (determine ndof by typing in command window (Linkagename).ndof)
+    % Manually change nr of nsig of model (determine nsig by typing in
+    %   command window (linkagename).nsig)
 
     properties (Access = private)
-        Robot   % SoRoSim model object
-        dt = 0.01
+        Robot               % SoRoSim model object (Tentacle)
+        ModelLoaded = false % Makes sure the model is initialized for the simulation
+        dt = 0.01           % Fixed timestep
     end
 
     methods (Access = protected)
         function setupImpl(obj)
-            % Initialize model only once
-            obj.Robot = getTentacleModel();
+            % Only load the model once
+            if ~obj.ModelLoaded
+                s = load('TentacleFiles.mat');  % must contain object T1
+                obj.Robot = s.Tentacle;         % Store Soft body under obj.Robot
+                obj.ModelLoaded = true;         % Model is initialized and this piece of code will be skipped further on in the simulation
+            end
         end
 
         function [Angle, AngularVelocity, sigcoordinates] = stepImpl(obj, u1, u2, ang, avel)
-            % Combine current state
+            % u: control input (column vector)
+            % ang: current angles
+            % avel: current angluar velocity
+
+            % Combine input state
             state = [ang(:); avel(:)];
 
-            % Simulate dynamics using preloaded model
+            % Simulate from current state using one timestep
             [~, qqd] = obj.Robot.dynamics(state, ...
                 @(t) deal([u1; u2], [], []), ...
                 dt = obj.dt, t_start = 0, t_end = 2 * obj.dt, ...
-                Integrator = 'ode45');
+                Integrator= 'ode45'); 
 
             % Return middle step result 
             state_out = (qqd(1, :) + qqd(2,:) + qqd(3,:))/3;    % Average of 3 output values
@@ -38,17 +51,44 @@ classdef SoftRobotSystemRL < matlab.System
         end
 
         function resetImpl(obj)
-            % Fast Restart–safe: no reinitialization
+            % No reset needed
         end
 
-        function flag = isInputSizeMutableImpl(~,~)
+        % Function below are referenced during initialization to let
+        % simulink know what Simulink can expect in terms of data
+        % structures and they thus do not know any of the model parameters
+
+        function flag = isInputSizeMutableImpl(~, ~)
             flag = false;
         end
 
-        function [posOut, velOut, cooOut] = getOutputSizeImpl(~)
-            posOut = [4, 1];
-            velOut = [4, 1];
-            cooOut = [3*8, 1];
+        function loadObjectImpl(obj,s,wasLocked)
+            % Set properties in object obj to values in structure s
+
+            % Set private and protected properties
+            % obj.myproperty = s.myproperty; 
+
+            % Set public properties and states
+            loadObjectImpl@matlab.System(obj,s,wasLocked);
+        end
+
+        function s = saveObjectImpl(obj)
+            % Set properties in structure s to values in object obj
+
+            % Set public properties and states
+            s = saveObjectImpl@matlab.System(obj);
+
+            % Set private and protected properties
+            %s.myproperty = obj.myproperty;
+        end
+
+        function [posOut, velOut, cooOut] = getOutputSizeImpl(obj)
+            % You must match these to your model's DoFs
+            N = 4;%obj.ndof;%<- change this to your number of position variables
+            nsig = 8;
+            posOut = [N, 1];
+            velOut = [N, 1];
+            cooOut = [nsig*3, 1];
         end
 
         function [posOut, velOut, cooOut] = getOutputDataTypeImpl(~)
@@ -69,14 +109,4 @@ classdef SoftRobotSystemRL < matlab.System
             cooOut = true;
         end
     end
-end
-
-function model = getTentacleModel()
-    % Persistent cache of tentacle model
-    persistent cachedModel
-    if isempty(cachedModel)
-        data = load('TentacleFiles.mat');
-        cachedModel = data.Tentacle;
-    end
-    model = cachedModel;
 end
